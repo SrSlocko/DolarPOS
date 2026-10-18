@@ -13,13 +13,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
 
       - name: Setup NuGet
-        uses: NuGet/setup-nuget@v2
+        uses: NuGet/setup-nuget@v4
 
       - name: Restore NuGet packages
         run: nuget restore Dolar_PuntoVenta.Datos.sln
@@ -28,7 +28,7 @@ jobs:
         run: msbuild Dolar_PuntoVenta.Datos.sln /p:Configuration=Release /p:Platform="Any CPU" /m /v:minimal
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Dolar_PuntoVenta-Release
           path: |
@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: Dolar_PuntoVenta-Release
           path: app
@@ -53,7 +53,7 @@ jobs:
         run: cd app && zip -r ../Dolar_PuntoVenta.zip . && cd ..
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: Dolar_PuntoVenta.zip
           generate_release_notes: true
