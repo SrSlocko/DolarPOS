@@ -1,0 +1,59 @@
+name: Build C#
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore Dolar_PuntoVenta.Datos.sln
+
+      - name: Build
+        run: msbuild Dolar_PuntoVenta.Datos.sln /p:Configuration=Release /p:Platform="Any CPU" /m /v:minimal
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Dolar_PuntoVenta-Release
+          path: |
+            **/bin/Release/**
+          retention-days: 30
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Dolar_PuntoVenta-Release
+          path: app
+
+      - name: Create zip
+        run: cd app && zip -r ../Dolar_PuntoVenta.zip . && cd ..
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Dolar_PuntoVenta.zip
+          generate_release_notes: true
