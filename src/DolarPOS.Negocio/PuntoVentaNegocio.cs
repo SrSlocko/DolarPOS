@@ -1,36 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
-using System.Data.SqlClient;
-using Dolar_PuntoVenta.Entidades;
-using Dolar_PuntoVenta.Datos;
+﻿using System.Data;
+using DolarPOS.Datos;
+using DolarPOS.Entidades;
 
+namespace DolarPOS.Negocio;
 
-namespace Dolar_PuntoVenta.Negocio
+/// <summary>
+/// Capa de negocio: única puerta de entrada para la presentación.
+/// Valida los datos antes de delegar en la capa de acceso a datos.
+/// </summary>
+public static class PuntoVentaNegocio
 {
-    public class N_Punto_Venta
+    private const int LongitudMaxima = 100;
+
+    public static Task<DataTable> ListarAsync(string texto, CancellationToken cancel = default)
+        => new PuntoVentaDatos().ListarAsync(texto, cancel);
+
+    public static async Task<string> GuardarAsync(int nOpcion, PuntoVenta pv, CancellationToken cancel = default)
     {
-      
-
-        public static DataTable Listado_pv(string cTexto)
+        if (string.IsNullOrWhiteSpace(pv.Descripcion))
         {
-            D_Punto_Venta Datos = new D_Punto_Venta();
-            return Datos.Listado_pv(cTexto);
+            return "La descripción es obligatoria.";
         }
 
-        public static string Guardar_pv(int nOpcion, E_Punto_Venta oPropiedad)
+        pv.Descripcion = pv.Descripcion.Trim();
+        if (pv.Descripcion.Length > LongitudMaxima)
         {
-            D_Punto_Venta Datos = new D_Punto_Venta();
-            return Datos.Guardar_pv(nOpcion,oPropiedad);
-        }
-        public static string Eliminar_pv(int Ncodigo)
-        {
-            D_Punto_Venta Datos = new D_Punto_Venta();
-            return Datos.Eliminar_pv(Ncodigo);
+            return $"La descripción no puede superar {LongitudMaxima} caracteres.";
         }
 
+        return await new PuntoVentaDatos().GuardarAsync(nOpcion, pv, cancel);
+    }
+
+    public static Task<string> EliminarAsync(int codigo, CancellationToken cancel = default)
+    {
+        if (codigo <= 0)
+        {
+            return Task.FromResult("Selecciona un registro válido.");
+        }
+
+        return new PuntoVentaDatos().EliminarAsync(codigo, cancel);
     }
 }

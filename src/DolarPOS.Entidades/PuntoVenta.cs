@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace DolarPOS.Entidades;
 
-namespace Dolar_PuntoVenta.Entidades
+/// <summary>
+/// Entidad que representa un punto de venta registrado en la base de datos.
+/// </summary>
+public sealed class PuntoVenta
 {
-    public class E_Punto_Venta
-    {
-        public int Codigo_pv { get; set; } 
-        public string Descripcion_pv { get; set; }
-    }
+    /// <summary>Identificador autogenerado por la base de datos (0 = nuevo).</summary>
+    public int Codigo { get; set; }
+
+    /// <summary>Nombre o descripción del punto de venta (obligatorio, máx. 100 caracteres).</summary>
+    public string Descripcion { get; set; } = string.Empty;
 }

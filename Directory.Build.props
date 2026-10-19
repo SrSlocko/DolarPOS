@@ -1,0 +1,15 @@
+<Project>
+  <!-- Configuración compartida por todos los proyectos de DolarPOS -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>2.0.0</Version>
+    <Authors>SrSlocko</Authors>
+    <Product>DolarPOS</Product>
+    <Description>Sistema de punto de venta en C# / .NET 10 / SQL Server</Description>
+    <RepositoryUrl>https://github.com/SrSlocko/DolarPOS</RepositoryUrl>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

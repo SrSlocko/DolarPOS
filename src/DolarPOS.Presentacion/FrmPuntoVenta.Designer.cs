@@ -1,6 +1,6 @@
-﻿namespace Dolar_PuntoVenta.Presentacion
+﻿namespace DolarPOS.Presentacion
 {
-    partial class Frm_Punto_Venta
+    partial class FrmPuntoVenta
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Frm_Punto_Venta));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPuntoVenta));
             this.Tbc_principal = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lbl_totalregistros = new System.Windows.Forms.Label();
@@ -304,6 +304,7 @@
             this.btn_Reporte.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btn_Reporte.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btn_Reporte.UseVisualStyleBackColor = false;
+            this.btn_Reporte.Click += new System.EventHandler(this.btn_Reporte_Click);
             // 
             // btn_Salir
             // 
@@ -321,8 +322,9 @@
             this.btn_Salir.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btn_Salir.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btn_Salir.UseVisualStyleBackColor = false;
+            this.btn_Salir.Click += new System.EventHandler(this.btn_Salir_Click);
             // 
-            // Frm_Punto_Venta
+            // FrmPuntoVenta
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -336,10 +338,10 @@
             this.Controls.Add(this.Tbc_principal);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Frm_Punto_Venta";
+            this.Name = "FrmPuntoVenta";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Punto de Venta";
-            this.Load += new System.EventHandler(this.Frm_Punto_Venta_Load);
+            this.Load += new System.EventHandler(this.FrmPuntoVenta_Load);
             this.Tbc_principal.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();

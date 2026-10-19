@@ -1,41 +1,41 @@
-name: Build C#
+name: Build DolarPOS
 
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
 
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v4
-
-      - name: Restore NuGet packages
-        run: nuget restore Dolar_PuntoVenta.Datos.sln
+      - name: Restore
+        run: dotnet restore DolarPOS.sln
 
       - name: Build
-        run: msbuild Dolar_PuntoVenta.Datos.sln /p:Configuration=Release /p:Platform="Any CPU" /m /v:minimal
+        run: dotnet build DolarPOS.sln -c Release --no-restore
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
-          name: Dolar_PuntoVenta-Release
-          path: |
-            **/bin/Release/**
+          name: DolarPOS-Build
+          path: '**/bin/Release/**'
           retention-days: 30
 
-  release:
+  publish:
+    # Solo publica el ejecutable autocontenido en tags (vX.Y.Z)
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
@@ -43,17 +43,26 @@ jobs:
       contents: write
 
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v8
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          name: Dolar_PuntoVenta-Release
-          path: app
+          dotnet-version: '10.0.x'
+
+      - name: Publish single-file (win-x64)
+        run: >
+          dotnet publish src/DolarPOS.Presentacion/DolarPOS.Presentacion.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true -p:DebugType=None
+          -o publish
 
       - name: Create zip
-        run: cd app && zip -r ../Dolar_PuntoVenta.zip . && cd ..
+        run: cd publish && zip -r ../DolarPOS-win-x64.zip . && cd ..
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v2
         with:
-          files: Dolar_PuntoVenta.zip
+          files: DolarPOS-win-x64.zip
           generate_release_notes: true

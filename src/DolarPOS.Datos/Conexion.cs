@@ -1,59 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
-namespace Dolar_PuntoVenta.Datos
+namespace DolarPOS.Datos;
+
+/// <summary>
+/// Fábrica de conexiones a SQL Server.
+/// La cadena de conexión se lee de appsettings.json (junto al ejecutable)
+/// o de la variable de entorno DOLARPOS_CADENA_CONEXION (tiene prioridad).
+/// Nunca se guardan credenciales en el código fuente.
+/// </summary>
+public sealed class Conexion
 {
-    public class Conexion
+    private static readonly Lazy<Conexion> _instancia = new(() => new Conexion(), LazyThreadSafetyMode.ExecutionAndPublication);
+
+    private readonly string _cadenaConexion;
+
+    private Conexion()
     {
-        private string Base;
-        private string Servidor;
-        private string Usuario;
-        private string Clave;
-        private static Conexion Con = null;
-
-        private Conexion()
-        {
-            this.Base = "BD_PUNTOVENTA";
-            this.Servidor = "DESKTOP-5BMJNVJ\\SQLEXPRESS";
-            this.Usuario = "soporte";
-            this.Clave = "qwe";
-        }
-
-        public SqlConnection CrearConexion()
-        {
-            SqlConnection Cadena = new SqlConnection();
-            try
-            {
-                Cadena.ConnectionString = "Server=" + this.Servidor +
-                                        "; Database=" + this.Base +
-                                        "; User Id=" + this.Usuario +
-                                        "; Password=" + this.Clave;
-                                                   
-            }
-            catch (Exception ex)
-            {
-
-                Cadena = null;
-                throw ex;
-            }
-            return Cadena;
-        }
-
-
-        public static Conexion getInstancia()
-        {
-            if (Con == null)
-            {
-                Con = new Conexion();
-            }
-            return Con;
-        }
-    
-
-
+        _cadenaConexion = Configuracion.CadenaConexion;
     }
+
+    /// <summary>Devuelve una conexión nueva (abierta por el llamador o con <c>await using</c>).</summary>
+    public SqlConnection CrearConexion() => new(_cadenaConexion);
+
+    public static Conexion Instancia => _instancia.Value;
 }
