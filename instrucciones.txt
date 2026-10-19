@@ -1,1 +1,0 @@
-Este es un programa de asistencias creado en visual studio 2017 con sql server
