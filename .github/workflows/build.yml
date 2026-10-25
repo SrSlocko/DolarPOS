@@ -62,7 +62,7 @@ jobs:
         run: cd publish && zip -r ../DolarPOS-win-x64.zip . && cd ..
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: DolarPOS-win-x64.zip
           generate_release_notes: true
